@@ -1,0 +1,32 @@
+﻿@page "/Employee/{IdEmployee}"
+@inject HttpClient Http
+@using System.ComponentModel.DataAnnotations.Schema
+@using BlazorDemo.Entities
+<h3>Employee</h3>
+
+
+@if (_employee == null)
+{
+    <img src="Images/loader.gif" />
+}
+else
+{
+    <p>Nom de l'employé : @_employee.data.employee_name</p>
+    <p>Age : @_employee.data.employee_age</p>
+    <p>Salaire : @_employee.data.employee_salary</p>
+}
+
+@code{
+    private string idEmployee;
+    [Parameter]
+    public string IdEmployee
+    {
+        get { return idEmployee; }
+        set { idEmployee = value; }
+    }
+    private EmployeeDetailsResponse _employee;
+    protected override async Task OnInitializedAsync()
+    {
+        _employee = await Http.GetJsonAsync<EmployeeDetailsResponse>("http://dummy.restapiexample.com/api/v1/employee/" + idEmployee);
+    }
+}

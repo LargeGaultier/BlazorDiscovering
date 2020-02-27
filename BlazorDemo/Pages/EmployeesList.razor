@@ -1,0 +1,53 @@
+﻿@page "/EmployeesList"
+@inject HttpClient Http
+@using BlazorDemo.Entities
+<h3>List des employés</h3>
+
+@if (_employees == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nom (C)</th>
+            <th>Age (F)</th>
+            <th>Salaire</th>
+            <th>Détails</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var employee in _employees.data)
+        {
+            <tr>
+                <td>@employee.id</td>
+                <td>@employee.employee_name</td>
+                <td>@employee.employee_age</td>
+                <td>@employee.employee_salary</td>
+                <td>
+                    @{
+                        var href = string.Concat("Employee/", @employee.id);
+                    }
+                    <NavLink class="nav-link" href="@href">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Détails
+                    </NavLink>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+
+@code {
+    private EmployeesResponse _employees;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _employees = await Http.GetJsonAsync<EmployeesResponse>("http://dummy.restapiexample.com/api/v1/employees");
+    }
+}
